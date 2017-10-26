@@ -3168,6 +3168,18 @@ public class TestSQLRepositoryQuery {
     }
 
     @Test
+    public void testQueryIdListNotFromUuidTotalSize() throws Exception {
+        DocumentModel doc1 = new DocumentModelImpl("/", "doc1", "File");
+        doc1 = session.createDocument(doc1);
+        doc1 = session.saveDocument(doc1);
+        session.save();
+        DocumentModelList dml;
+        String query = "SELECT dc:subjects/* FROM File WHERE ecm:name = 'doc1'";
+        dml = session.query(query, null, 10, 0, true);
+        assertEquals(0, dml.totalSize());
+    }
+
+    @Test
     public void testQueryIdListNotFromUuid() throws Exception {
         DocumentModel doc1 = new DocumentModelImpl("/", "doc1", "File");
         doc1 = session.createDocument(doc1);
