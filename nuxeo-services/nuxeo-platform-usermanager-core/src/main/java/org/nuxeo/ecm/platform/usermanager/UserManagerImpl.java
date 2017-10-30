@@ -410,7 +410,8 @@ public class UserManagerImpl implements UserManager, MultiTenantUserManager, Adm
         }
         try (Session userDir = dirService.open(userDirName)) {
             if (!userDir.isAuthenticating()) {
-                log.error("Trying to authenticate against a non authenticating " + "directory: " + userDirName);
+                log.error("Trying to authenticate against a non authenticating " + "directory: " + userDirName,
+                        new Throwable("here"));
                 return false;
             }
 

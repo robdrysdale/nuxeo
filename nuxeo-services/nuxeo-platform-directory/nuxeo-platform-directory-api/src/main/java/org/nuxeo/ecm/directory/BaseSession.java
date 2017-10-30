@@ -344,11 +344,22 @@ public abstract class BaseSession implements Session, EntrySource {
 
     @Override
     public DocumentModel getEntryFromSource(String id, boolean fetchReferences) throws DirectoryException {
-        String idFieldName = schemaFieldMap != null ? schemaFieldMap.get(getIdField()).getName().getPrefixedName()
-                : getIdField();
+        String idFieldName = getIdFieldName();
         DocumentModelList result = query(Collections.singletonMap(idFieldName, id), Collections.emptySet(),
                 Collections.emptyMap(), true);
         return result.isEmpty() ? null : result.get(0);
+    }
+
+    protected String getIdFieldName() {
+        String idField = getIdField();
+        if (schemaFieldMap == null) {
+            return idField;
+        }
+        if (schemaFieldMap.containsKey(idField)) {
+            return schemaFieldMap.get(idField).getName().getPrefixedName();
+        }
+        log.error(String.format("idField schema not found: %s in %s", idField, schemaFieldMap.keySet()));
+        return idField;
     }
 
     @Override
