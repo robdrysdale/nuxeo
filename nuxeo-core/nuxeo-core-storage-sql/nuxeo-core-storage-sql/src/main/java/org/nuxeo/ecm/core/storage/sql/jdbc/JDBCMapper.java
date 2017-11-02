@@ -37,6 +37,7 @@ import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -164,6 +165,10 @@ public class JDBCMapper extends JDBCRowMapper implements Mapper {
 
     @Override
     public void createDatabase(String ddlMode) {
+        String debugmsg = Instant.now() + " Creating database from thread: " + Thread.currentThread().getName() + " nt="
+                + System.nanoTime();
+        System.err.println(debugmsg);
+        new Exception(debugmsg).printStackTrace();
         // some databases (SQL Server) can't create tables/indexes/etc in a transaction, so suspend it
         try {
             if (!connection.getAutoCommit()) {
@@ -173,6 +178,8 @@ public class JDBCMapper extends JDBCRowMapper implements Mapper {
         } catch (SQLException e) {
             throw new NuxeoException(e);
         }
+        System.err.println(debugmsg + " DONE");
+;
     }
 
     protected String getTableName(String origName) {
@@ -633,6 +640,10 @@ public class JDBCMapper extends JDBCRowMapper implements Mapper {
 
     @Override
     public void setRootId(Serializable repositoryId, Serializable id) {
+        String debugmsg = Instant.now() + " setRootId from thread: " + Thread.currentThread().getName() + " nt="
+                + System.nanoTime();
+        System.err.println(debugmsg);
+        new Exception(debugmsg).printStackTrace();
         String sql = sqlInfo.getInsertRootIdSql();
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             List<Column> columns = sqlInfo.getInsertRootIdColumns();
@@ -663,6 +674,7 @@ public class JDBCMapper extends JDBCRowMapper implements Mapper {
             }
             ps.execute();
             countExecute();
+            System.err.println(debugmsg + " DONE");
         } catch (SQLException e) {
             throw new NuxeoException("Could not insert: " + sql, e);
         }

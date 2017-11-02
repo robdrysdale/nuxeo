@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -104,6 +105,10 @@ public class DatabaseH2 extends DatabaseHelper {
     }
 
     protected void tearDownDatabase(String url) throws SQLException {
+        String debugmsg = Instant.now() + " Shutdown database from thread: " + Thread.currentThread().getName() + " nt="
+                + System.nanoTime();
+        System.err.println(debugmsg);
+        new Exception(debugmsg).printStackTrace();
         Connection connection = DriverManager.getConnection(url, user, password);
         try {
             Statement st = connection.createStatement();
@@ -117,6 +122,7 @@ public class DatabaseH2 extends DatabaseHelper {
         } finally {
             connection.close();
         }
+        System.err.println(debugmsg + " DONE");
     }
 
     @Override
