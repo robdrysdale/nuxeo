@@ -52,11 +52,11 @@ integration/.*'''],
                        archive 'nuxeo-distribution/nuxeo-server-cmis-tests/target/**/failsafe-reports/*, nuxeo-distribution/nuxeo-server-cmis-tests/target/*.png, nuxeo-distribution/nuxeo-server-cmis-tests/target/*.json, nuxeo-distribution/nuxeo-server-cmis-tests/target/**/*.log, nuxeo-distribution/nuxeo-server-cmis-tests/target/**/log/*, nuxeo-distribution/nuxeo-server-cmis-tests/target/**/nxserver/config/distribution.properties, nuxeo-distribution/nuxeo-server-cmis-tests/target/nxtools-reports/*'
                        failOnServerError('nuxeo-distribution/nuxeo-server-cmis-tests/target/tomcat/log/server.log')
                     },
-                    "funkload" : validate(sha, 'funkload', 'nuxeo-jsf-ui-funkload-tests') {
+                    'funkload' : validate(sha, 'funkload', 'nuxeo-jsf-ui-funkload-tests') {
                       archive 'nuxeo-distribution/nuxeo-jsf-ui-funkload-tests/target/**/failsafe-reports/*, nuxeo-distribution/nuxeo-jsf-ui-funkload-tests/target/*.png, nuxeo-distribution/nuxeo-jsf-ui-funkload-tests/target/*.json, nuxeo-distribution/nuxeo-jsf-ui-funkload-tests/target/**/*.log, nuxeo-distribution/nuxeo-jsf-ui-funkload-tests/target/**/log/*, nuxeo-distribution/nuxeo-jsf-ui-funkload-tests/target/**/nxserver/config/distribution.properties, nuxeo-distribution/nuxeo-jsf-ui-funkload-tests/target/results/*/*'
                       failOnServerError('nuxeo-distribution/nuxeo-server-funkload-tests/target/tomcat/log/server.log')
                     },
-                    "webdriver" : validate(sha, 'webdriver', 'nuxeo-jsf-ui-webdriver-tests') {
+                    'webdriver' : validate(sha, 'webdriver', 'nuxeo-jsf-ui-webdriver-tests') {
 		       archive 'nuxeo-distribution/nuxeo-jsf-ui-webdriver-tests/target/**/failsafe-reports/*, nuxeo-distribution/nuxeo-jsf-ui-webdriver-tests/target/*.png, nuxeo-distribution/nuxeo-jsf-ui-webdriver-tests/target/*.json, nuxeo-distribution/nuxeo-jsf-ui-webdriver-tests/target/**/*.log, nuxeo-distribution/nuxeo-jsf-ui-webdriver-tests/target/**/log/*, nuxeo-distribution/nuxeo-jsf-ui-webdriver-tests/target/**/nxserver/config/distribution.properties, nuxeo-distribution/nuxeo-server-cmis-tests/target/nxtools-reports/*, nuxeo-distribution/nuxeo-jsf-ui-webdriver-tests/target/results/*/*'
                        junit '**/target/surefire-reports/*.xml, **/target/failsafe-reports/*.xml, **/target/failsafe-reports/**/*.xml'
                        failOnServerError('nuxeo-distribution/nuxeo-jsf-ui-webdriver-tests/target/tomcat/log/server.log')
@@ -77,11 +77,11 @@ integration/.*'''],
 def validate(String sha, String name, String dir, Closure post) {
   node('SLAVE') {
     stage(name) {
-      ws("$WORKSPACE-$name") {
+      ws("${WORKSPACE}-${name}") {
         unstash "clone"
         timeout(time: 2, unit: 'HOURS') {
-          withBuildStatus("$DBPROFILE-$DBVERSION/ftest/$name", 'https://github.com/nuxeo/nuxeo', sha, "${BUILD_URL}") {
-	   withDockerCompose("$JOB_NAME-$BUILD_NUMBER-$name", "integration/Jenkinsfiles/docker-compose-$DBPROFILE-$DBVERSION.yml", "mvn -B -f $WORKSPACE/nuxeo-distribution/$dir/pom.xml clean verify -Pqa,tomcat,$DBPROFILE", post)
+          withBuildStatus("${DBPROFILE}-${DBVERSION}/ftest/${name}", 'https://github.com/nuxeo/nuxeo', sha, "${BUILD_URL}") {
+	   withDockerCompose("${JOB_NAME}-${BUILD_NUMBER}-${name}", "integration/Jenkinsfiles/docker-compose-${DBPROFILE}-${DBVERSION}.yml", "mvn -B -f ${WORKSPACE}/nuxeo-distribution/${dir}/pom.xml clean verify -Pqa,tomcat,${DBPROFILE}", post)
 	  }
 	}
       }
