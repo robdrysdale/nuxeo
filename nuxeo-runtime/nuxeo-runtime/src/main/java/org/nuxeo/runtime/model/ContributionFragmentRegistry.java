@@ -88,7 +88,7 @@ public abstract class ContributionFragmentRegistry<T> {
 
     /**
      * Adds or updates a contribution.
-     * <p>
+     * <p>nuxeo.conf
      * If the contribution doesn't yet exists then it will be added, otherwise the value will be updated. If the given
      * value is null the existing contribution must be removed.
      * <p>
