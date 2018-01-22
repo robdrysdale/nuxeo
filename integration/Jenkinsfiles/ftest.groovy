@@ -20,8 +20,7 @@
 currentBuild.setDescription("Branch: $BRANCH -> $PARENT_BRANCH, DB: $DBPROFILE, VERSION: $DBVERSION")
 
                               
-def upstreamArtifactPattern = /(\d+)-(\d+)-(\d+)/
-def upstreamArtifact = rawBuild.upstreamArtifact(upstreamArtifactPattern)
+def upstreamArtifact = rawBuild.upstreamArtifact(/nuxeo-server-tomcat-.*\.zip/)
 if (upstreamArtifact != null) {
     print "upstream upstreamArtifact"
 }
@@ -94,31 +93,4 @@ def validate(String sha, String name, String dir, Closure post) {
       }
     }
   }
-}
-
-
-
-def upstreamRun() {
-    currentBuild.actions.each { action ->
-	if (action instanceof CauseAction) {
-	    Cause.UpstreamCause cause = ((CauseAction)action).getCause(Cause.UpstreamCause.class)
-	    if (cause != null) {
-		return cause.getUpstreamRun()
-	    }
-	}
-	if(action.hasProperty("causes")) {
-	    action.causes.each { cause ->
-		if(cause instanceof hudson.model.Cause$UpstreamCause && cause.hasProperty("shortDescription") && cause.shortDescription.contains("Started by upstream project")) {
-		    map.UPSTREAM_BUILD_URL = currentBuild.environment.JENKINS_URL + cause.upstreamUrl + cause.upstreamBuild
-		    map.UPSTREAM_BUILD = cause.upstreamRun
-		    currentBuild.description = 'Upstream: <a href="' + map.UPSTREAM_BUILD_URL + '">' + map.UPSTREAM_BUILD + '</a>'
-		}
-	    }
-	}
-    }
-    return map
-}
-
-
-return map
 }
