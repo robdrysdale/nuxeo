@@ -19,7 +19,7 @@
 
 currentBuild.setDescription("Branch: $BRANCH -> $PARENT_BRANCH, DB: $DBPROFILE, VERSION: $DBVERSION")
 
-def upstreamArtifact = rawBuild.upstreamArtifact('nuxeo-server-tomcat-.*\.zip')
+def upstreamArtifact = rawBuild.upstreamArtifact(/nuxeo-server-tomcat-.*\.zi/)
 if (upstreamArtifact != null) {
     print "upstream upstreamArtifact"
 }
