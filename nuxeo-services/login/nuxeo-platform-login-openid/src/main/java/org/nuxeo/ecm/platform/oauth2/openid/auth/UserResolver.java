@@ -55,14 +55,12 @@ public abstract class UserResolver {
             userDoc = userManager.getBareUserModel();
             userDoc.setPropertyValue(userManager.getUserIdField(), nuxeoLogin);
 
-            userDoc = userManager.createUser(userDoc);
+            return Framework.doPrivileged(() -> userManager.createUser(userDoc));
 
         } catch (NuxeoException e) {
             log.error("Error while creating user " + nuxeoLogin + "in UserManager", e);
             return null;
         }
-
-        return userDoc;
     }
 
     protected abstract DocumentModel updateUserInfo(DocumentModel user, OpenIDUserInfo userInfo);

@@ -176,10 +176,12 @@ public class DefaultOpenIDUserInfo extends GenericJson implements OpenIDUserInfo
 
     @Override
     public Date getUpdatedTime() {
-        Date date;
+        Date date = null;
         try {
-            DateTime dateTime = DateTime.parseRfc3339(updatedTime);
-            date = new Date(dateTime.getValue());
+            if (updatedTime != null) {
+                DateTime dateTime = DateTime.parseRfc3339(updatedTime);
+                date = new Date(dateTime.getValue());
+            }
         } catch (NumberFormatException e) {
             return null;
         }
