@@ -27,6 +27,7 @@ import java.security.SecureRandom;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.api.client.http.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,12 +43,6 @@ import org.nuxeo.ecm.platform.ui.web.auth.service.LoginProviderLinkComputer;
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import com.google.api.client.auth.oauth2.TokenResponse;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpMediaType;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
@@ -211,10 +206,15 @@ public class OpenIDConnectProvider implements LoginProviderLinkComputer {
                 JSON_FACTORY)));
 
         GenericUrl url = new GenericUrl(userInfoURL);
-        url.set(accessTokenKey, accessToken);
+        if (accessTokenKey.equals("HEADER:Authorization")) {
+            url.set(accessTokenKey, accessToken);
+        }
 
         try {
             HttpRequest request = requestFactory.buildGetRequest(url);
+            if (accessTokenKey.equals("HEADER:Authorization")) {
+                request.setHeaders(new HttpHeaders().setAuthorization("Bearer " + accessToken));
+            }
             HttpResponse response = request.execute();
             String body = IOUtils.toString(response.getContent(), "UTF-8");
             log.debug(body);
